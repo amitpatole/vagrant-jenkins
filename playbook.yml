@@ -1,0 +1,50 @@
+---
+- name: Demo for Sample Jenkins Server with git installed
+  hosts: all
+  gather_facts: true
+  become: yes
+  become_method: sudo
+  tags: [jenkins]
+
+  tasks:
+    - name: Update the software package repository
+      yum:
+        name: "*"
+        update_cache: yes
+    - name: Install dependencies for Jenkins
+      package:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - java-1.8.0-openjdk
+        - git
+        - wget
+    - name: Download jenkins repo
+      command: wget -O /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat-stable/jenkins.repo
+    - name: Import Jenkins  key
+      rpm_key:
+        key: https://pkg.jenkins.io/redhat-stable/jenkins.io.key
+        state: present
+    - name: Install Jenkins
+      yum:
+        name: "jenkins"
+        state: present
+    - name: Allow port 8080
+      shell: iptables -I INPUT -p tcp --dport 8080 -m state --state NEW,ESTABLISHED -j ACCEPT
+    - name: Start the server
+      service:
+        name: jenkins
+        state: started
+    - name: wait 60 seconds for Jenkins to start properly 
+      wait_for:
+        port: 8080
+        delay: 60
+    - name: Get Admin Password
+      become: yes
+      become_method: sudo
+      command: cat /var/lib/jenkins/secrets/initialAdminPassword
+      register: result
+
+    - name: Print init password Jenkins
+      debug:
+        var: result.stdout
