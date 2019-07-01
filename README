@@ -1,0 +1,13 @@
+# vagrant-jenkins
+instantiate centos vm on GCE and install jenkins
+
+Change following in Vagrantfile
+
+$GOOGLE_PROJECT_ID = "your GOOGLE_PROJECT_ID"
+$GOOGLE_JSON_KEY_LOCATION = "location of GOOGLE_JSON_KEY"
+$LOCAL_USER = "your local username"
+$LOCAL_SSH_KEY = "~/.ssh/id_rsa"
+Add your id_rsa.pub to your compute metadata keys
+
+to instantiate use following command
+vagrant up --provider=google
