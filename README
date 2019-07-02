@@ -1,6 +1,10 @@
 # vagrant-jenkins
 instantiate centos vm on GCE and install jenkins
 
+vagrant plugin dependency:
+vagrant plugin install vagrant-ansible-local vagrant-compose  vagrant-dns vagrant-dnsmasq vagrant-exec vagrant-google vagrant-guest_ansibl vagrant-hostmanager vagrant-hosts vagrant-hostsupdater
+
+
 Change following in Vagrantfile
 
 $GOOGLE_PROJECT_ID = "your GOOGLE_PROJECT_ID"
